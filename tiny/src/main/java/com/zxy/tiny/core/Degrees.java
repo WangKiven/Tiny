@@ -2,10 +2,15 @@ package com.zxy.tiny.core;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.util.TypedValue;
+
+import androidx.annotation.RequiresApi;
+import androidx.exifinterface.media.ExifInterface;
 
 import com.zxy.tiny.Tiny;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,8 +21,13 @@ import java.io.InputStream;
 public class Degrees {
 
     public static Bitmap handle(Bitmap bitmap, byte[] data) {
-        if (ExifCompat.isJpeg(data)) {
+        // jpg，heif都有可能方向不对
+        /*if (ExifCompat.isJpeg(data)) {
             int orientation = ExifCompat.getOrientation(data);
+            bitmap = BitmapKit.rotateBitmap(bitmap, orientation);
+        }*/
+        int orientation = getOrientation(data);
+        if (orientation != 0) {
             bitmap = BitmapKit.rotateBitmap(bitmap, orientation);
         }
         return bitmap;
@@ -36,10 +46,12 @@ public class Degrees {
             }
             os.close();
 
-            if (ExifCompat.isJpeg(os.toByteArray())) {
+            // jpg，heif都有可能方向不对
+            /*if (ExifCompat.isJpeg(os.toByteArray())) {
                 int orientation = ExifCompat.getOrientation(os.toByteArray());
                 bitmap = BitmapKit.rotateBitmap(bitmap, orientation);
-            }
+            }*/
+            bitmap = handle(bitmap, os.toByteArray());
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -54,4 +66,38 @@ public class Degrees {
         return bitmap;
     }
 
+
+    public static int getOrientation(byte[] data) {
+        int orientation = ExifInterface.ORIENTATION_NORMAL;
+        int degree;
+        try {
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
+
+            ExifInterface exif = new ExifInterface(inputStream);
+            orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL);
+
+            inputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        switch (orientation) {
+            case ExifInterface.ORIENTATION_NORMAL:
+                degree = 0;
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                degree = 90;
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                degree = 180;
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                degree = 270;
+                break;
+            default:
+                degree = 0;
+                break;
+        }
+        return degree;
+    }
 }

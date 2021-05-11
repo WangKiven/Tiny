@@ -9,6 +9,7 @@ import android.util.TypedValue;
 
 import com.zxy.tiny.Tiny;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -234,13 +235,31 @@ public class BitmapCompressor {
         InputStream is = null;
         Resources resources = Tiny.getInstance().getApplication().getResources();
         try {
-            is = resources.openRawResource(resId, new TypedValue());
+            /*is = resources.openRawResource(resId, new TypedValue());
             BitmapFactory.Options decodeOptions = CompressKit.getDefaultDecodeOptions();
             decodeOptions.inPreferredConfig = options.config;
             decodeOptions.inSampleSize = sampleSize;
             Bitmap bitmap = BitmapFactory.decodeStream(is, null, decodeOptions);
             bitmap = Degrees.handle(bitmap, resId);
-            return bitmap;
+            return bitmap;*/
+
+            is = resources.openRawResource(resId, new TypedValue());
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            byte[] buffer = new byte[4096];
+            int len = -1;
+            while ((len = is.read(buffer)) != -1) {
+                os.write(buffer, 0, len);
+            }
+            os.close();
+
+            byte[] data = os.toByteArray();
+
+            BitmapFactory.Options decodeOptions = CompressKit.getDefaultDecodeOptions();
+            decodeOptions.inPreferredConfig = options.config;
+            decodeOptions.inSampleSize = sampleSize;
+            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length, decodeOptions);
+
+            return Degrees.handle(bitmap, data);
         } finally {
             if (is != null) {
                 try {
