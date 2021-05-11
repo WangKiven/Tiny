@@ -15,6 +15,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.zxy.tiny.Tiny;
+
 import java.io.File;
 
 public class MainActivity extends BaseActivity {
@@ -57,11 +59,12 @@ public class MainActivity extends BaseActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             //for test,so simple impl.
                             try {
-                                File dir = new File(getExternalFilesDir(null).getParent() + File.separator + "tiny");
+                                /*File dir = new File(getExternalFilesDir(null).getParent() + File.separator + "tiny");
                                 File[] files = dir.listFiles();
                                 for (int i = 0; i < files.length; i++) {
                                     files[i].delete();
-                                }
+                                }*/
+                                Tiny.getInstance().clearCompressDirectory();
                                 Toast.makeText(MainActivity.this.getApplication(), "Clear success!", Toast.LENGTH_SHORT).show();
                             } catch (Exception e) {
 

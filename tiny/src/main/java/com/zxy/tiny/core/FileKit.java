@@ -151,4 +151,28 @@ public final class FileKit {
         }
         return true;
     }
+
+
+
+    public static boolean deleteFile(File file) {
+        if (file == null || !file.exists()) return true;
+        if (file.isFile()) {
+            return file.delete();
+        }
+        File[] children = file.listFiles();
+        if (children == null) {
+            return file.delete();
+        }
+
+        boolean clear = true;
+        for (File child: children) {
+            boolean result = deleteFile(child);
+            if (!result) clear = false;
+        }
+
+        if (clear)
+            return file.delete();
+
+        return false;
+    }
 }

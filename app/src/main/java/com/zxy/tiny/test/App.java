@@ -3,6 +3,8 @@ package com.zxy.tiny.test;
 import android.app.Application;
 import android.util.Log;
 
+import com.kiven.kutils.tools.KContext;
+import com.kiven.kutils.tools.KUtil;
 import com.zxy.recovery.callback.RecoveryCallback;
 import com.zxy.recovery.core.Recovery;
 import com.zxy.tiny.Tiny;
@@ -10,10 +12,15 @@ import com.zxy.tiny.Tiny;
 /**
  * Created by zhengxiaoyong on 2017/3/14.
  */
-public class App extends Application {
+public class App extends KContext {
     @Override
-    public void onCreate() {
-        super.onCreate();
+    protected void init() {
+        super.init();
+
+        KUtil.Config config = new KUtil.Config();
+        config.setDebug(true);
+        KUtil.init(this, config);
+
         Tiny.getInstance().debug(true).init(this);
 
         Recovery.getInstance().debug(true).callback(new RecoveryCallback() {

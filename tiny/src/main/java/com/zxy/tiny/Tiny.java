@@ -117,7 +117,8 @@ public final class Tiny {
     public synchronized boolean clearCompressDirectory() {
         File dir = FileKit.getDefaultFileCompressDirectory();
         try {
-            return FileKit.clearDirectory(dir);
+//            return FileKit.clearDirectory(dir);
+            return FileKit.deleteFile(dir);
         } catch (Exception e) {
             //for android 6.0+,permission request
         }
