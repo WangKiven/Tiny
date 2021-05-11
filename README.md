@@ -2,8 +2,7 @@
 an image compression framework.
 
 ----
-
-[ ![Download](https://api.bintray.com/packages/sunzxyong/maven/Tiny/images/download.svg) ](https://bintray.com/sunzxyong/maven/Tiny/_latestVersion)[![Travis](https://img.shields.io/travis/rust-lang/rust.svg)]() [![Hex.pm](https://img.shields.io/hexpm/l/plug.svg)]() ![](https://img.shields.io/badge/architecture-clean-yellow.svg)
+[![](https://jitpack.io/v/WangKiven/Tiny.svg)](https://jitpack.io/#WangKiven/Tiny)
 
 [Blog entry with introduction](http://zhengxiaoyong.com/2017/04/23/Android%E5%9B%BE%E7%89%87%E5%8E%8B%E7%BC%A9%E6%A1%86%E6%9E%B6-Tiny/)
 or
@@ -20,14 +19,31 @@ or
 372KB (500x500) | 38.67KB (500x500) | 34.05KB (500x500)|
 236KB (960x1280) | 127KB (960x1280) | 118KB (960x1280)|
 
-## **Introduce**
-`Tiny` does not depend on any library , it keeps the code clean on architecture . `Tiny` also uses an asynchronous thread pool to compress images , and will hand out the result in the main thread when compression is completed.
+## **介绍**
+`Tiny` 是一个图片压缩工具 。原有的库太老了，不能用于较新的应用开发，所以做了一些修改。
 
-## **Usage**
-### **Installation**
+- 适配到最新的系统
+- 处理`heif`图片压缩后方向不对的问题。`heif`是新系统支持的图片格式。
+- 由于图片方向获取使用了`androidx`的`ExifInterface`库，所以限制只有支持`androidx`的程序可以使用
+
+## **使用**
+### **导入**
+
+第一步添加仓库
 
 ```
-implementation 'com.zxy.android:tiny:1.1.0'
+allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+}
+```
+
+第二部导入库
+
+```
+implementation 'com.github.WangKiven.Tiny:tiny:1.0.1'
 ```
 
 ### **Choose an abi**
@@ -180,5 +196,4 @@ android {
 >  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 >  See the License for the specific language governing permissions and
 >  limitations under the License.
-
 
