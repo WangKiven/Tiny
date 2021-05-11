@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
+import android.os.ParcelFileDescriptor;
 import android.text.TextUtils;
 import android.util.TypedValue;
 
@@ -238,25 +239,50 @@ public class FileCompressor {
             String filePath = UriUtil.getRealPathFromUri(uri);
             if (TextUtils.isEmpty(filePath))
                 return null;
-            if (Conditions.fileIsExist(filePath) && Conditions.fileCanRead(filePath)) {
+            // 兼容 android 10
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 FileInputStream fis = null;
-                File file = new File(filePath);
+                ParcelFileDescriptor pfd = null;
                 try {
-                    fis = new FileInputStream(file);
-                    byte[] decodeBytes = CompressKit.transformToByteArray(fis);
-                    if (options.isKeepSampling) {
-                        BitmapFactory.Options decodeOptions = CompressKit.getDefaultDecodeOptions();
-                        decodeOptions.inPreferredConfig = options.config;
-                        result[0] = BitmapFactory.decodeByteArray(decodeBytes, 0, decodeBytes.length, decodeOptions);
-                    } else {
-                        result[0] = BitmapCompressor.compress(decodeBytes, options, true);
+                    pfd = Tiny.getInstance().getApplication().getContentResolver().openFileDescriptor(uri, "r");
+                    if (pfd != null) {
+                        fis = new FileInputStream(pfd.getFileDescriptor());
+                        byte[] decodeBytes = CompressKit.transformToByteArray(fis);
+                        if (options.isKeepSampling) {
+                            BitmapFactory.Options decodeOptions = CompressKit.getDefaultDecodeOptions();
+                            decodeOptions.inPreferredConfig = options.config;
+                            result[0] = BitmapFactory.decodeByteArray(decodeBytes, 0, decodeBytes.length, decodeOptions);
+                        } else {
+                            result[0] = BitmapCompressor.compress(decodeBytes, options, true);
+                        }
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 } finally {
+                    if (pfd != null) { pfd.close(); }
+                    if (fis != null) fis.close();
+                }
+            } else {
+                if (Conditions.fileIsExist(filePath) && Conditions.fileCanRead(filePath)) {
+                    FileInputStream fis = null;
+                    File file = new File(filePath);
                     try {
-                        if (fis != null)
-                            fis.close();
-                    } catch (IOException e) {
-                        //ignore...
+                        fis = new FileInputStream(file);
+                        byte[] decodeBytes = CompressKit.transformToByteArray(fis);
+                        if (options.isKeepSampling) {
+                            BitmapFactory.Options decodeOptions = CompressKit.getDefaultDecodeOptions();
+                            decodeOptions.inPreferredConfig = options.config;
+                            result[0] = BitmapFactory.decodeByteArray(decodeBytes, 0, decodeBytes.length, decodeOptions);
+                        } else {
+                            result[0] = BitmapCompressor.compress(decodeBytes, options, true);
+                        }
+                    } finally {
+                        try {
+                            if (fis != null)
+                                fis.close();
+                        } catch (IOException e) {
+                            //ignore...
+                        }
                     }
                 }
             }

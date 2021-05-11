@@ -3,7 +3,8 @@ package com.zxy.tiny.test;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * Created by zhengxiaoyong on 2017/4/2.
