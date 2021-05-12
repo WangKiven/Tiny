@@ -242,6 +242,7 @@ public class FileWithReturnBitmapCompressTestActivity extends BaseActivity {
                 fos.write(buffer, 0, len);
             }
             fos.close();
+            is.reset();// 重置。该方法是与mark()配合用，没用mark()是默认mark位置为初始位置。
 
             InputStream is2 = new FileInputStream(outfile);
 
@@ -304,7 +305,7 @@ public class FileWithReturnBitmapCompressTestActivity extends BaseActivity {
     }
 
     private void testUri() {
-        final String url = "http://7xswxf.com2.z0.glb.qiniucdn.com//blog/deec2ac0373d08eb85a.jpg";
+        final String url = Const.url;
         try {
             new Thread(new Runnable() {
                 @Override

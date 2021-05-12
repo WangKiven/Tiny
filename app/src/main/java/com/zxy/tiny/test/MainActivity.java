@@ -17,8 +17,6 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.zxy.tiny.Tiny;
 
-import java.io.File;
-
 public class MainActivity extends BaseActivity {
 
     private TextView mInfoTv;

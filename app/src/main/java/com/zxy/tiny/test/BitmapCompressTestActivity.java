@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.kiven.kutils.logHelper.KLog;
 import com.zxy.tiny.Tiny;
 import com.zxy.tiny.callback.BitmapCallback;
 import com.zxy.tiny.core.HttpUrlConnectionFetcher;
@@ -222,9 +223,11 @@ public class BitmapCompressTestActivity extends BaseActivity {
 
     private void testStream() {
         try {
+            String fileName = "test-4.jpg";
+
             final InputStream is = getResources().getAssets()
-                    .open("test-4.jpg");
-            File outfile = new File(getExternalFilesDir(null), "test-4.jpg");
+                    .open(fileName);
+            /*File outfile = new File(getExternalFilesDir(null), "test-4.jpg");
             FileOutputStream fos = new FileOutputStream(outfile);
             byte[] buffer = new byte[4096];
             int len = -1;
@@ -233,7 +236,7 @@ public class BitmapCompressTestActivity extends BaseActivity {
             }
             fos.close();
 
-            InputStream is2 = new FileInputStream(outfile);
+            InputStream is2 = new FileInputStream(outfile);*/
 
             final BitmapFactory.Options options = new BitmapFactory.Options();
             options.inPreferredConfig = mConfig;
@@ -243,6 +246,8 @@ public class BitmapCompressTestActivity extends BaseActivity {
 
             Tiny.BitmapCompressOptions compressOptions = new Tiny.BitmapCompressOptions();
             compressOptions.config = mConfig;
+
+            InputStream is2 = getResources().getAssets().open(fileName);
             Tiny.getInstance().source(is2).asBitmap().withOptions(compressOptions).compress(new BitmapCallback() {
                 @Override
                 public void callback(boolean isSuccess, Bitmap bitmap, Throwable t) {
@@ -287,7 +292,8 @@ public class BitmapCompressTestActivity extends BaseActivity {
     }
 
     private void testUri() {
-        final String url = "http://7xswxf.com2.z0.glb.qiniucdn.com//blog/deec2ac0373d08eb85a.jpg";
+//        final String url = "http://7xswxf.com2.z0.glb.qiniucdn.com//blog/deec2ac0373d08eb85a.jpg";
+        final String url = Const.url;
         try {
             new Thread(new Runnable() {
                 @Override
@@ -316,7 +322,7 @@ public class BitmapCompressTestActivity extends BaseActivity {
                 @Override
                 public void callback(boolean isSuccess, Bitmap bitmap, Throwable t) {
                     if (!isSuccess) {
-                        Log.e("zxy", "error: " + t.getMessage());
+                        KLog.e(t);
                         mCompressTv.setText("compress bitmap failed!");
                         return;
                     }

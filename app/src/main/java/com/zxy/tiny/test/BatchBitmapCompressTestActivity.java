@@ -304,10 +304,6 @@ public class BatchBitmapCompressTestActivity extends BaseActivity {
     }
 
     private void testUri() {
-        String url1 = "http://7xswxf.com2.z0.glb.qiniucdn.com//blog/deec2ac0373d08eb85a.jpg";
-        String url2 = "http://7xswxf.com2.z0.glb.qiniucdn.com/IMG_1439.JPG";
-        String url3 = "http://7xswxf.com2.z0.glb.qiniucdn.com/IMG_1698.JPG";
-        String url4 = "http://7xswxf.com2.z0.glb.qiniucdn.com/IMG_1694.JPG";
         try {
             final InputStream is = getResources().getAssets()
                     .open("enjoy.JPG");
@@ -320,7 +316,7 @@ public class BatchBitmapCompressTestActivity extends BaseActivity {
 
             Tiny.BitmapCompressOptions compressOptions = new Tiny.BitmapCompressOptions();
             compressOptions.config = mConfig;
-            Uri[] uris = new Uri[]{Uri.parse(url1), Uri.parse(url2), Uri.parse(url3), Uri.parse(url4)};
+            Uri[] uris = new Uri[]{Uri.parse(Const.urls[0]), Uri.parse(Const.urls[1]), Uri.parse(Const.urls[2]), Uri.parse(Const.urls[3])};
             Tiny.getInstance().source(uris).batchAsBitmap().withOptions(compressOptions).batchCompress(new BitmapBatchCallback() {
                 @Override
                 public void callback(boolean isSuccess, Bitmap[] bitmaps,Throwable t) {
